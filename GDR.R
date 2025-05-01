@@ -64,6 +64,7 @@ help("round.bigq")
 
 A333448_explicit <- function(n) {
   # OEIS supplies the first 12 values explicitly
+  # Lorenzo Sauras Altuzarra https://oeis.org/A333448
   patch <- c(1, 1, 5, 1, 10, 4, 12, 2, 19, 7, 19, 3)
   if (n <= 12) return(patch[n])
   
@@ -123,11 +124,11 @@ A045572_explicit_2[1:62]
 all.equal(A045572_oeis,A045572_explicit_)
 all.equal(A045572_oeis,A045572_explicit_2)
 
-## A383504i ----
+## A383504 ----
 # Not published yet
 
 ##
-A383504i_implicit <- 
+A383504_implicit <- 
   function(N) {
     a <- integer(N)  # pre-allocate vector of zeros
     last_nonzero <- 0
@@ -144,11 +145,11 @@ A383504i_implicit <-
     return(a)
 }
 
-A383504i_implicit_ <- 
-  A383504i_implicit(67)
+A383504_implicit_ <- 
+  A383504_implicit(67)
 
 ##
-A383504i_explicit <- function(n) {
+A383504_explicit <- function(n) {
   
   N <- 1000
   A045572_vec <- sapply(1:N, A045572_explicit)
@@ -161,19 +162,19 @@ A383504i_explicit <- function(n) {
   }
 }
 
-A383504i_explicit_ <- 
-  sapply(1:67, A383504i_explicit)
+A383504_explicit_ <- 
+  sapply(1:67, A383504_explicit)
 
 # Compare
-A383504i_implicit_[1:67]
-A383504i_explicit_[1:67]
-all.equal(A383504i_implicit_, A383504i_explicit_)
+A383504_implicit_[1:67]
+A383504_explicit_[1:67]
+all.equal(A383504_implicit_, A383504_explicit_)
 
-## A383504ii ----
+## A383593 ----
 # Not published yet
 
 ##
-A383504ii_implicit <-
+A383593_implicit <-
   function(N, A333448_vals) {
     if (length(A333448_vals) < N) {
       stop("A333448_vals must have at least N values.")
@@ -189,22 +190,22 @@ A383504ii_implicit <-
       k <- k + 1
     }
     
-    # Step 2: Create A383504ii[n] = A333448[i] if A045572[i] == n
+    # Step 2: Create A383593[n] = A333448[i] if A045572[i] == n
     max_n <- max(A045572)
-    A383504ii <- integer(max_n)
+    A383593 <- integer(max_n)
     for (i in seq_len(N)) {
       n <- A045572[i]
-      A383504ii[n] <- A333448_vals[i]
+      A383593[n] <- A333448_vals[i]
     }
     
-    return(A383504ii)
+    return(A383593)
 }
 
-A383504ii_implicit_ <-
-  A383504ii_implicit(67, A333448_oeis)
+A383593_implicit_ <-
+  A383593_implicit(67, A333448_oeis)
 
 ##
-A383504ii_explicit <- function(n) {
+A383593_explicit <- function(n) {
   n   <- as.integer(n)
   out <- integer(length(n))
   
@@ -218,45 +219,45 @@ A383504ii_explicit <- function(n) {
   out
 }
 
-A383504ii_explicit_ <- 
-  sapply(1:length(A383504ii_implicit_), A383504ii_explicit)
+A383593_explicit_ <- 
+  sapply(1:length(A383593_implicit_), A383593_explicit)
 
 # Compare 
-A383504ii_implicit_[1:67]
-A383504ii_explicit_[1:67]
-all.equal(A383504ii_implicit_[1:67],A383504ii_explicit_[1:67])
+A383593_implicit_[1:67]
+A383593_explicit_[1:67]
+all.equal(A383593_implicit_[1:67],A383593_explicit_[1:67])
 
 ## *GDR Definitions ----
 
-# A383504ii(n) = A333448(N) iff [A045572(N)=n and gcd(n,10)=1]
+# A383593(n) = A333448(N) iff [A045572(N)=n and gcd(n,10)=1]
 
-# A045572(A383504i(n)) = A383504i(A045572(n)) = n when gcd(n,10)=1
-# A383504i(n)=0 when gcd(n,10)>1
-# A045572(4)=9 and A383504i(9)=4
+# A045572(A383504(n)) = A383504(A045572(n)) = n when gcd(n,10)=1
+# A383504(n)=0 when gcd(n,10)>1
+# A045572(4)=9 and A383504(9)=4
 
-# D(n) = A333448(A383504i(n))
-# D(9) = A333448(A383504i(9)) = A333448(4) = 1
+# D(n) = A333448(A383504(n))
+# D(9) = A333448(A383504(9)) = A333448(4) = 1
 
-# D(n) = A383504ii(n)
-# D(9) = A383504ii(9) = 1
+# D(n) = A383593(n)
+# D(9) = A383593(9) = 1
 
 ## Visual Comparisons ----
 min_len <- 
   min(length(A333448_oeis),
       length(A045572_oeis),
-      length(A383504i_explicit_),
-      length(A383504i_implicit_),
-      length(A383504ii_explicit_),
-      length(A383504ii_implicit_))
+      length(A383504_explicit_),
+      length(A383504_implicit_),
+      length(A383593_explicit_),
+      length(A383593_implicit_))
 
 df <-
   tibble(A045572_oeis = A045572_oeis[1:min_len],
          # A045572_explicit_ = A045572_explicit_[1:min_len],
          # A045572_explicit_2 = A045572_explicit_2[1:min_len],
-         A383504i_implicit = A383504i_implicit_[1:min_len],
-         A383504i_explicit = A383504i_explicit_[1:min_len],
-         A383504ii_implicit = A383504ii_implicit_[1:min_len],
-         A383504ii_explicit = A383504ii_explicit_[1:min_len],
+         A383504_implicit = A383504_implicit_[1:min_len],
+         A383504_explicit = A383504_explicit_[1:min_len],
+         A383593_implicit = A383593_implicit_[1:min_len],
+         A383593_explicit = A383593_explicit_[1:min_len],
          A333448_oeis = A333448_oeis[1:min_len],
          # A333448_explicit = A333448_explicit_[1:min_len]
   )
