@@ -62,21 +62,33 @@ A045572_data <- A045572$data
 # names(A383504)
 # head(A383504$data)
 
-A383504_data <-
-  c(
-  1, 3, 7, 9, 11, 13, 17, 19, 21, 23,
-  27, 29, 31, 33, 37, 39, 41, 43, 47, 49,
-  51, 53, 57, 59, 61, 63, 67, 69, 71, 73,
-  77, 79, 81, 83, 87, 89, 91, 93, 97, 99,
-  101, 103, 107, 109, 111, 113, 117, 119, 121
-)
+generate_A383504 <- 
+  function(N) {
+    a <- integer(N)  # pre-allocate vector of zeros
+    last_nonzero <- 0
+    
+    for (n in 1:N) {
+      if (n %% 2 == 0 || n %% 5 == 0) {
+        a[n] <- 0
+      } else {
+        a[n] <- last_nonzero + 1
+        last_nonzero <- a[n]
+      }
+    }
+    
+    return(a)
+}
+
+A383504_data <- 
+  generate_A383504(121)
 
 ## GDR Definitions ----
 
-# D(n) = A333448_data(A383504_data(n))
+# A045572(A383504(n)) = A383504(A045572(n)) = n
+# A045572(4)=9 and A383504(9)=4
 
-# A045572_data(A383504_data(n)) = A383504_data(A045572_data(n)) = n
-
+# D(n) = A333448(A383504(n))
+# D(9) = A333448(A383504(9)) = A333448(4) = 1
 
 ## Work ----
 min_len <- 
@@ -86,9 +98,8 @@ min_len <-
 
 df <-
   tibble(A045572 = A045572_data[1:min_len],
-         A333448 = A333448_data[1:min_len],
-         A383504 = A383504_data[1:min_len]
-    
+         A383504 = A383504_data[1:min_len],
+         A333448 = A333448_data[1:min_len]
   )
 
 df
